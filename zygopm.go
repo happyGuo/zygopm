@@ -53,8 +53,16 @@ func commands() []cli.Command {
 			},
 		},
 		{
+			Name:      "cc",
+			Usage:     "清除本地缓存",
+			Action: func(c *cli.Context) error {
+				cmd.CacheClear()
+				return nil
+			},
+		},
+		{
 			Name:  "i",
-			Usage: "安装依赖包到指定目录，不指定则在GOAPTH的第一个目录",
+			Usage: "安装依赖包到指定目录，不指定则在第一个$GOAPTH目录",
 			Flags: []cli.Flag{
 				cli.BoolFlag{
 					Name:  "p",
@@ -77,7 +85,7 @@ func commands() []cli.Command {
 				if c.Bool("p") && c.Bool("v") {
 					msg.Die("不能同时指定 -p -v")
 				}
-				iPath := setting.GetFirstGOPATH()
+				iPath := setting.GetFirstGOPATHSrc()
 				if c.Bool("p") {
 					iPath = conf.GetInstallPath()
 					msg.Warn("依赖包将会安装到=>" + iPath)
@@ -124,7 +132,7 @@ func commands() []cli.Command {
 				if c.Bool("p") && c.Bool("v") {
 					msg.Die("不能同时指定 -p -v")
 				}
-				iPath := setting.GetFirstGOPATH()
+				iPath := setting.GetFirstGOPATHSrc()
 				if c.Bool("p") {
 					iPath = conf.GetInstallPath()
 					msg.Warn("依赖包将会安装到=>" + iPath)

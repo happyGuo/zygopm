@@ -85,7 +85,7 @@ func (i *Installer) Checkout(conf *cfg.Config) error {
 		}
 		//有版本管理的包目录
 		destPath := filepath.Join(cache.Location(), "src", key)
-		if _, err := dep.GetRepo(destPath); err != nil {
+		if _, err := os.Stat(destPath); err != nil {
 			newDeps = append(newDeps, dep)
 			continue
 		}
@@ -111,7 +111,7 @@ func (i *Installer) Checkout(conf *cfg.Config) error {
 
 // 从cache内导出到 i.Vendor  目录
 func (i *Installer) Export(conf *cfg.Config) error {
-	tempDir, err := ioutil.TempDir(setting.Tmp, "gopm-vendor")
+	tempDir, err := ioutil.TempDir(setting.Home(), "temp")
 	if err != nil {
 		return err
 	}

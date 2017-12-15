@@ -3,10 +3,6 @@ package cmd
 import (
 	"testing"
 	"zygopm/module/repo"
-	"zygopm/module/setting"
-
-	"io/ioutil"
-	"path/filepath"
 )
 
 func TestInstall(t *testing.T) {
@@ -22,8 +18,3 @@ func TestInstall(t *testing.T) {
 
 }
 
-func TestTempDir(t *testing.T) {
-	tempDir, err := ioutil.TempDir(setting.Tmp, "gopm-vendor")
-	f := filepath.FromSlash("./vendor")
-	t.Log(tempDir, err, f)
-}

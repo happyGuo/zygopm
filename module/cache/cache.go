@@ -86,7 +86,7 @@ func SetupReset() {
 
 // Location returns the location of the cache.
 func Location() string {
-	p := filepath.Join(setting.Home(), "zygopm-cache")
+	p := filepath.Join(setting.Home(), "cache")
 	Setup()
 
 	return p

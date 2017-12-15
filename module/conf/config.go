@@ -94,7 +94,7 @@ func DependencyFromLock(lock *Lock) *Dependency {
 func GetInstallPath() string {
 	c, err := ConfigFromToml()
 	if err != nil || c.Path == "" {
-		return setting.GetFirstGOPATH()
+		return setting.GetFirstGOPATHSrc()
 	}
 	return c.Path
 }

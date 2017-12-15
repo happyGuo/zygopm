@@ -18,9 +18,7 @@ const (
 
 var gopmFileName = "gopm.toml"
 var lockFile = "gopm.lock"
-var Tmp = ""
 var gopaths string
-var homeDir string
 
 func init() {
 	if gopaths = os.Getenv("GOPATH"); len(gopaths) == 0 {
@@ -29,25 +27,21 @@ func init() {
 			gopaths = strings.TrimSpace(string(out))
 		}
 	}
-	//设置临时目录
-	Tmp = GetFirstGOPATH()
-	//设置缓存目录
-	homeDir = GetFirstGOPATH()
-
 }
 
+
 //获取第一个gopath
-func GetFirstGOPATH() string {
+func GetFirstGOPATHSrc() string {
 	s := strings.Split(gopaths, string(os.PathListSeparator))
+	if len(s)==0 {
+		msg.Die("gopath未设置")
+	}
 	return filepath.Join(s[0], "src")
 }
 
 //TODO 完善缓存目录获取
 func Home() string {
-	if homeDir == "" {
-		msg.Die("gopath目录未设置")
-	}
-	return filepath.Dir(homeDir)
+	return filepath.Join(filepath.Dir(GetFirstGOPATHSrc()), "zygopm-home")
 
 }
 
