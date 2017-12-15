@@ -22,8 +22,8 @@ func Update(installer *repo.Installer) {
 	}
 	//checkout 到需要的版本
 	//pin值是 git rev-parse HEAD
-	if err := repo.SetReference(conf, installer.ResolveTest); err != nil {
-		msg.Die("切换版本失败，请检查配置文件: %s", err)
+	if err := repo.SetReference(conf); err != nil {
+		msg.Die("切换版本失败，请检查配置文件或网络: %s", err)
 	}
 
 	e := installer.Export(conf)

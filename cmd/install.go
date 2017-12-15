@@ -25,15 +25,19 @@ func Install(installer *repo.Installer) {
 	// 读取锁文件
 	lock, err := cfg.ReadLockFile()
 	if err != nil {
-		msg.Die("不能加载锁文件")
+		//msg.Die("不能加载锁文件")
+		msg.Warn("锁文件不存在,以配置文件执行安装")
+		Update(installer)
+		return
 	}
 
+	//不验证配置文件是否改动 todo
 	hash, err := cfg.Hash()
 	if err != nil {
 		msg.Die(err.Error())
 	}
 	if hash != lock.Hash {
-		msg.Warn("配置文件已经修改,开始执行update")
+		msg.Warn("配置文件已经修改,将以配置来更新安装包...")
 		Update(installer)
 		return
 	}
@@ -45,7 +49,7 @@ func Install(installer *repo.Installer) {
 
 	msg.Info("设置版本")
 
-	if err := repo.SetReference(newConf, installer.ResolveTest); err != nil {
+	if err := repo.SetReference(newConf); err != nil {
 		msg.Die("设置版本失败", err)
 	}
 

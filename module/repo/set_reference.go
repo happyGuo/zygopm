@@ -10,7 +10,7 @@ import (
 )
 
 //将缓存内的git仓库checkout 到指定的版本
-func SetReference(conf *cfg.Config, resolveTest bool) error {
+func SetReference(conf *cfg.Config) error {
 
 	if len(conf.Imports) == 0 && len(conf.DevImports) == 0 {
 		msg.Info("没有需要导入的依赖")
@@ -67,14 +67,6 @@ func SetReference(conf *cfg.Config, resolveTest bool) error {
 		in <- dep
 
 	}
-
-	if resolveTest {
-		for _, dep := range conf.DevImports {
-			wg.Add(1)
-			in <- dep
-		}
-	}
-
 	wg.Wait()
 
 	for i := 0; i < concurrentWorkers; i++ {

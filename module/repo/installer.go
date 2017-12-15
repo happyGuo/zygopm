@@ -23,7 +23,6 @@ import (
 
 // Installer provides facilities for installing the repos in a config file.
 type Installer struct {
-
 	// Force the install when certain normally stopping conditions occur.
 	Force bool
 
@@ -84,7 +83,7 @@ func (i *Installer) Install(lock *cfg.Lockfile, conf *cfg.Config) (*cfg.Config, 
 		return newConf, nil
 	}
 
-	msg.Info("开始下载...")
+	msg.Info("在本地缓存开始查找...")
 
 	err := LazyConcurrentUpdate(newConf.Imports, i, newConf)
 	if err != nil {
@@ -101,16 +100,36 @@ func (i *Installer) Install(lock *cfg.Lockfile, conf *cfg.Config) (*cfg.Config, 
 // vendor directory based on changed config.
 func (i *Installer) Checkout(conf *cfg.Config) error {
 
-	msg.Info("开始下载...")
+	newDeps := []*cfg.Dependency{}
+	for _, dep := range conf.Imports {
+		//缓存找到
+		key, err := cache.Key(dep.Remote())
+		if err != nil {
+			newDeps = append(newDeps, dep)
+			continue
+		}
+		//有版本管理的包目录
+		destPath := filepath.Join(cache.Location(), "src", key)
+		if _, err := dep.GetRepo(destPath); err != nil {
+			newDeps = append(newDeps, dep)
+			continue
+		}
 
-	if err := ConcurrentUpdate(conf.Imports, i, conf); err != nil {
-		return err
+		if dep.Reference != "" && VcsVersion(dep) != nil {
+			msg.Warn("本地包的版本库内不存在此版本 %s %s", dep.Name, dep.Reference)
+			newDeps = append(newDeps, dep)
+			continue
+		}
+		msg.Warn("在本地找到可用的版本 %s %s ", dep.Name, dep.Reference)
 	}
 
-	if i.ResolveTest {
-		return ConcurrentUpdate(conf.DevImports, i, conf)
-	}
+	if len(newDeps) > 0 {
 
+		msg.Info("开始下载需要更新的包...")
+		if err := ConcurrentUpdate(newDeps, i, conf); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -270,9 +289,9 @@ func (i *Installer) Export(conf *cfg.Config) error {
 					if err != nil {
 						msg.Die(err.Error())
 					}
-					msg.Info("--> Exporting %s", dep.Name)
+					msg.Info("--> 正在导出包 %s", dep.Name)
 					if err := repo.ExportDir(filepath.Join(vp, filepath.ToSlash(dep.Name))); err != nil {
-						msg.Err("Export failed for %s: %s\n", dep.Name, err)
+						msg.Err("导出包失败 %s: %s\n", dep.Name, err)
 						// Capture the error while making sure the concurrent
 						// operations don't step on each other.
 						lock.Lock()
@@ -406,7 +425,7 @@ func LazyConcurrentUpdate(deps []*cfg.Dependency, i *Installer, c *cfg.Config) e
 			newDeps = append(newDeps, dep)
 			continue
 		}
-
+		ver, err := repo.Version()
 		if err != nil {
 			newDeps = append(newDeps, dep)
 			continue
@@ -418,7 +437,7 @@ func LazyConcurrentUpdate(deps []*cfg.Dependency, i *Installer, c *cfg.Config) e
 				continue
 			}
 		}
-
+		msg.Debug("--> 包 %s 要更新到需要的版本(%s != %s)", dep.Name, ver, dep.Reference)
 		newDeps = append(newDeps, dep)
 	}
 	if len(newDeps) > 0 {
@@ -611,7 +630,6 @@ func (m *MissingPackageHandler) fetchToCache(pkg string, addTest bool) error {
 
 // VersionHandler handles setting the proper version in the VCS.
 type VersionHandler struct {
-
 	// If Try to use the version here if we have one. This is a cache and will
 	// change over the course of setting versions.
 	Use *importCache

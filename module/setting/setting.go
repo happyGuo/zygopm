@@ -47,7 +47,7 @@ func Home() string {
 	if homeDir == "" {
 		msg.Die("gopath目录未设置")
 	}
-	return homeDir
+	return filepath.Dir(homeDir)
 
 }
 

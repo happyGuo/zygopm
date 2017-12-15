@@ -193,7 +193,7 @@ func VcsVersion(dep *cfg.Dependency) error {
 	// If there is a ^ prefix we assume it's a semver constraint rather than
 	// part of the git/VCS commit id.
 	if repo.IsReference(ver) && !strings.HasPrefix(ver, "^") {
-		msg.Info("--> Setting version for %s to %s.\n", dep.Name, ver)
+		msg.Info("--> 设置版本 %s to %s.\n", dep.Name, ver)
 	} else {
 
 		// Create the constraint first to make sure it's valid before
