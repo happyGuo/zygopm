@@ -57,5 +57,4 @@ func Install(installer *repo.Installer) {
 	if err != nil {
 		msg.Die("不能导出到: %s", err)
 	}
-
 }

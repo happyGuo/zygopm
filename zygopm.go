@@ -11,6 +11,7 @@ import (
 	"zygopm/module/repo"
 	"zygopm/module/setting"
 	"path/filepath"
+	"zygopm/module/cache"
 )
 
 var version = "0.1.0-dev"
@@ -23,10 +24,14 @@ func main() {
 	app.Version = version
 	//cli 执行的命令
 	app.Commands = commands()
-
+	//清理全局锁文件
+	app.After = shutdown
 	app.Run(os.Args)
 }
-
+func shutdown(c *cli.Context) error {
+	cache.SystemUnlock()
+	return nil
+}
 func commands() []cli.Command {
 	return []cli.Command{
 		{

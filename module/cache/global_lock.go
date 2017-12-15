@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"zygopm/module/msg"
-	gpath "zygopm/module/path"
+	"zygopm/module/setting"
 )
 
 var isStarted bool
@@ -46,7 +46,7 @@ type lockdata struct {
 	Time    string `json:"time"`
 }
 
-var lockFileName = filepath.Join(gpath.Home(), "lock.json")
+var lockFileName = filepath.Join(setting.Home(), "lock.json")
 
 // Write a lock for now.
 func writeLock() error {
@@ -58,7 +58,7 @@ func writeLock() error {
 	}
 
 	ld := &lockdata{
-		Comment: "File managed by Glide (https://glide.sh)",
+		Comment: "zygopm全局锁文件",
 		Pid:     os.Getpid(),
 		Time:    time.Now().Format(time.RFC3339Nano),
 	}
