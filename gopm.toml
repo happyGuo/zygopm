@@ -1,0 +1,32 @@
+path = ""
+package = "zygopm"
+
+[[import]]
+  package = "github.com/BurntSushi/toml"
+  version = ""
+  repo = ""
+  vcs = ""
+
+[[import]]
+  package = "github.com/Masterminds/semver"
+  version = ""
+  repo = ""
+  vcs = ""
+
+[[import]]
+  package = "github.com/Masterminds/vcs"
+  version = ""
+  repo = ""
+  vcs = ""
+
+[[import]]
+  package = "github.com/mitchellh/go-homedir"
+  version = ""
+  repo = ""
+  vcs = ""
+
+[[import]]
+  package = "github.com/urfave/cli"
+  version = ""
+  repo = ""
+  vcs = ""
