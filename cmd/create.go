@@ -16,7 +16,7 @@ import (
 
 func Create(base string) {
 	//配置文件路径
-	p := path.Join(base, setting.GetGopmConfFIleName())
+	p := path.Join(base, setting.GetGopmConfFileName())
 	// 生成依赖
 	c := genDeps(base)
 	msg.Info("写入配置文件 (%s)", p)

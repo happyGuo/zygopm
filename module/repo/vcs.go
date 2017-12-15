@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"runtime"
+	//"runtime"
 	"sort"
 	"strings"
 
@@ -36,10 +36,6 @@ func VcsUpdate(dep *cfg.Dependency, force bool, updated *UpdateTracker) error {
 	}
 	updated.Add(dep.Name)
 
-	if filterArchOs(dep) {
-		msg.Info("%s is not used for %s/%s.\n", dep.Name, runtime.GOOS, runtime.GOARCH)
-		return nil
-	}
 
 	key, err := cp.Key(dep.Remote())
 	if err != nil {
@@ -291,40 +287,6 @@ func VcsGet(dep *cfg.Dependency) error {
 	}
 
 	return nil
-}
-
-// filterArchOs indicates a dependency should be filtered out because it is
-// the wrong GOOS or GOARCH.
-//
-// FIXME: Should this be moved to the dependency package?
-func filterArchOs(dep *cfg.Dependency) bool {
-	found := false
-	if len(dep.Arch) > 0 {
-		for _, a := range dep.Arch {
-			if a == runtime.GOARCH {
-				found = true
-			}
-		}
-		// If it's not found, it should be filtered out.
-		if !found {
-			return true
-		}
-	}
-
-	found = false
-	if len(dep.Os) > 0 {
-		for _, o := range dep.Os {
-			if o == runtime.GOOS {
-				found = true
-			}
-		}
-		if !found {
-			return true
-		}
-
-	}
-
-	return false
 }
 
 // isBranch returns true if the given string is a branch in VCS.

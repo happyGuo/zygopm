@@ -31,8 +31,7 @@ type Dependency struct {
 	Repository  string   `toml:"repo"`
 	VcsType     string   `toml:"vcs"`
 	Subpackages []string `toml:"subpackages"`
-	Arch        []string `toml:"arch"`
-	Os          []string `toml:"os"`
+
 }
 
 //第二层的锁文件结构
@@ -42,8 +41,7 @@ type Lock struct {
 	Repository  string   `toml:"repo,omitempty"`
 	VcsType     string   `toml:"vcs,omitempty"`
 	Subpackages []string `toml:"subpackages,omitempty"`
-	Arch        []string `toml:"arch,omitempty"`
-	Os          []string `toml:"os,omitempty"`
+
 }
 
 type Locks []*Lock
@@ -78,8 +76,7 @@ func LockFromDependency(dep *Dependency) *Lock {
 		Repository:  dep.Repository,
 		VcsType:     dep.VcsType,
 		Subpackages: dep.Subpackages,
-		Arch:        dep.Arch,
-		Os:          dep.Os,
+
 	}
 }
 
@@ -90,8 +87,7 @@ func DependencyFromLock(lock *Lock) *Dependency {
 		Repository:  lock.Repository,
 		VcsType:     lock.VcsType,
 		Subpackages: lock.Subpackages,
-		Arch:        lock.Arch,
-		Os:          lock.Os,
+
 	}
 }
 
@@ -110,7 +106,7 @@ func ReadLockFile() (*Lockfile, error) {
 		msg.Die("锁配置文件没找到")
 	}
 
-	lockpath := filepath.Join(path, setting.GetGopmLockFIleName())
+	lockpath := filepath.Join(path, setting.GetGopmLockFileName())
 	lock := &Lockfile{}
 	_, error := toml.DecodeFile(lockpath, &lock)
 
@@ -124,7 +120,7 @@ func (lf *Lockfile) WriteFile() error {
 		msg.Die("请先生成配置文件")
 	}
 
-	lockpath := filepath.Join(path, setting.GetGopmLockFIleName())
+	lockpath := filepath.Join(path, setting.GetGopmLockFileName())
 	f, err := os.Create(lockpath)
 	if err != nil {
 		return err
@@ -144,7 +140,7 @@ func Hash() (string, error) {
 	if err != nil {
 		msg.Die("配置文件没找到")
 	}
-	p := filepath.Join(path, setting.GetGopmConfFIleName())
+	p := filepath.Join(path, setting.GetGopmConfFileName())
 	file, err := os.Open(p)
 	defer file.Close()
 	if err != nil {
@@ -163,7 +159,7 @@ func HasLock() bool {
 	if err != nil {
 		msg.Die("配置文件没找到")
 	}
-	_, e := os.Stat(filepath.Join(basepath, setting.GetGopmLockFIleName()))
+	_, e := os.Stat(filepath.Join(basepath, setting.GetGopmLockFileName()))
 	return e == nil
 }
 
@@ -174,7 +170,7 @@ func ConfigFromToml() (*Config, error) {
 		msg.Die("配置文件没找到")
 	}
 
-	configPath := filepath.Join(path, setting.GetGopmConfFIleName())
+	configPath := filepath.Join(path, setting.GetGopmConfFileName())
 	cfg := &Config{}
 	_, error := toml.DecodeFile(configPath, &cfg)
 
@@ -197,8 +193,8 @@ func getTomlFilePath() (string, error) {
 
 //获取gopmfile目录：默认有gopmfile 文件的目录就是项目
 func ZYgopmWD(dir string) (string, error) {
-	confpath := filepath.Join(dir, setting.GetGopmConfFIleName())
-	lockpath := filepath.Join(dir, setting.GetGopmLockFIleName())
+	confpath := filepath.Join(dir, setting.GetGopmConfFileName())
+	lockpath := filepath.Join(dir, setting.GetGopmLockFileName())
 
 	if _, err := os.Stat(confpath); err == nil {
 		return dir, nil

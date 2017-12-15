@@ -73,20 +73,20 @@ func Vendor() (string, error) {
 }
 
 //获取配置文件name
-func GetGopmConfFIleName() string {
+func GetGopmConfFileName() string {
 	return gopmFileName
 }
 
 //设置配置文件name
-func SetGopmConfFIleName(f string) {
+func SetGopmConfFileName(f string) {
 	gopmFileName = f+".toml"
 }
 //获取配置文件name
-func GetGopmLockFIleName() string {
+func GetGopmLockFileName() string {
 	return lockFile
 }
 
 //设置配置文件name
-func SetGopmLockFIleName(f string) {
+func SetGopmLockFileName(f string) {
 	lockFile = f+".lock"
 }

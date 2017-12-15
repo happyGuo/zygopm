@@ -17,7 +17,8 @@ var version = "0.1.0-dev"
 
 func main() {
 	app := cli.NewApp()
-	app.Usage = `克隆到$GOPATH/src目录下 go build zygopm.go 生成可执行文件`
+	app.Usage = `安装完成后，执行 zygopm -h 查看帮助
+					e.g. zygopm i -h 可以查看安装的子命令的说明`
 	app.Name = "zygopm"
 	app.Version = version
 	//cli 执行的命令
@@ -40,7 +41,7 @@ func commands() []cli.Command {
 
 			Action: func(c *cli.Context) error {
 				if c.String("c")!="" {
-					setting.SetGopmConfFIleName(c.String("c"))
+					setting.SetGopmConfFileName(c.String("c"))
 				}
 				cmd.Create(".")
 				return nil
@@ -83,8 +84,8 @@ func commands() []cli.Command {
 				}
 
 				if c.String("c")!="" {
-					setting.SetGopmConfFIleName(c.String("c"))
-					setting.SetGopmLockFIleName(c.String("c"))
+					setting.SetGopmConfFileName(c.String("c"))
+					setting.SetGopmLockFileName(c.String("c"))
 				}
 
 				installer := repo.NewInstaller()
@@ -130,8 +131,8 @@ func commands() []cli.Command {
 				}
 
 				if c.String("c")!="" {
-					setting.SetGopmConfFIleName(c.String("c"))
-					setting.SetGopmLockFIleName(c.String("c"))
+					setting.SetGopmConfFileName(c.String("c"))
+					setting.SetGopmLockFileName(c.String("c"))
 				}
 
 				installer := repo.NewInstaller()
